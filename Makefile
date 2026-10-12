@@ -11,7 +11,10 @@ node_modules: package.json
 dist/extension.js dist/prefs.js: node_modules
 	tsc
 
-$(NAME).zip: dist/extension.js dist/prefs.js
+schemas/gschemas.compiled: schemas/org.gnome.shell.extensions.accent-directories.gschema.xml
+	glib-compile-schemas schemas/
+
+$(NAME).zip: dist/extension.js dist/prefs.js schemas/gschemas.compiled
 	@cp metadata.json dist/
 	@cp -r schemas dist/
 	@cp -r icons dist/
@@ -20,7 +23,6 @@ $(NAME).zip: dist/extension.js dist/prefs.js
 pack: $(NAME).zip
 
 install: $(NAME).zip
-	@touch ~/.local/share/gnome-shell/extensions/$(NAME)@$(DOMAIN)
 	@rm -rf ~/.local/share/gnome-shell/extensions/$(NAME)@$(DOMAIN)
 	@mv dist ~/.local/share/gnome-shell/extensions/$(NAME)@$(DOMAIN)
 
